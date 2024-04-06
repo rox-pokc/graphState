@@ -1,2 +1,5 @@
 .venv/
 .idea/
+
+state/__init__.py
+state/__pycache__/
