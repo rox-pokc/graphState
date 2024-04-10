@@ -1,3 +1,4 @@
+import unittest
 import numpy as np
 from functools import cmp_to_key
 
@@ -28,8 +29,9 @@ def XorConvolution(bit_vec1, bit_vec2):
     for i in range(len(bit_vec1)):
         res = res ^ (bit_vec1[i] & bit_vec2[i])
     return res
-    
 
+
+# TODO: do a class truth table with titles, values, overrided toString and so on
 def TruthTable(num_args):
     # Generate permutation for xor: 001 means x[2], 100 means x[0], 011 means x[1]^x[2], etc.
     xor_table = []
@@ -49,7 +51,7 @@ def TruthTable(num_args):
 
     return truth_table
 
-def FromFuntionToTruthTable(bool_func, num_args):
+def get_truth_table(bool_func, num_args):
     # Generate truth table with a column for the function value
     truth_table = TruthTable(num_args)
     for i in range(len(truth_table)):
@@ -57,7 +59,7 @@ def FromFuntionToTruthTable(bool_func, num_args):
 
     return truth_table
 
-def FromTruthTableToFuntion(truth_table):
+def FromTruthTableToFunction(truth_table):
     num_args = int(np.log2(len(truth_table[0]) + 1))
 
     f_str = ""
@@ -72,12 +74,12 @@ def FromTruthTableToFuntion(truth_table):
     # sage has Sbox() function that does this
     # https://doc.sagemath.org/html/en/reference/coding_theory/sage/coding_theory/sbox.html
     # it's likely connected to fft
-    
+
 
     return num_args, "x[0] & x[1]"
 
 
-def test_FromFuntionToTruthTable():
+def test_FromFunctionToTruthTable():
 
     # Test 1 - smallest case
     f1 = lambda x: (x[0] and x[1])
@@ -86,7 +88,7 @@ def test_FromFuntionToTruthTable():
                                [0,1,1,0],
                                [1,0,1,0],
                                [1,1,0,1]])
-    truth_table = FromFuntionToTruthTable(f1, num_args)
+    truth_table = get_truth_table(f1, num_args)
     assert np.array_equal(truth_table, result_table1)
 
     # Test 2 - GHZ case
@@ -100,7 +102,8 @@ def test_FromFuntionToTruthTable():
                      [1,0,1,1,0,1,0,0],
                      [1,1,0,0,1,1,0,1],
                      [1,1,1,0,0,0,1,0]]
-    truth_table = FromFuntionToTruthTable(f2, num_args)
+    truth_table = get_truth_table(f2, num_args)
+    print(truth_table)
     assert np.array_equal(truth_table, result_table2)
 
     # Test 3 - 4 args
@@ -111,24 +114,25 @@ def test_FromFuntionToTruthTable():
         x = np.array([int(b) for b in np.binary_repr(i, width=num_args)])
         row = [x[0], x[1], x[2], x[3],
               x[0]^x[1], x[0]^x[2], x[0]^x[3], x[1]^x[2], x[1]^x[3], x[2]^x[3],
-              x[0]^x[1]^x[2], x[0]^x[1]^x[3], x[0]^x[2]^x[3], x[1]^x[2]^x[3], 
-              x[0]^x[1]^x[2]^x[3], 
+              x[0]^x[1]^x[2], x[0]^x[1]^x[3], x[0]^x[2]^x[3], x[1]^x[2]^x[3],
+              x[0]^x[1]^x[2]^x[3],
               f3(x)]
         result_table3.append(row)
-    truth_table = FromFuntionToTruthTable(f3, num_args)
+    truth_table = get_truth_table(f3, num_args)
     assert np.array_equal(truth_table, result_table3)
 
     print("All function-to-table tests passed")
     return
 
-def test_FromTruthTableToFuntion():
+
+def test_FromTruthTableToFunction():
     truth_table = [[0,0,0,0],
                     [0,1,1,0],
                     [1,0,1,0],
                     [1,1,0,1]]
     first_col = [row[0] for row in truth_table]
     print(first_col)
-    num_args, f_str = FromTruthTableToFuntion(truth_table)
+    num_args, f_str = FromTruthTableToFunction(truth_table)
     f = lambda x: eval(f_str)
     print(truth_table[0])
     for i in range(len(truth_table)):
@@ -136,6 +140,3 @@ def test_FromTruthTableToFuntion():
 
     print("All table-to-function tests passed")
     return
-
-test_FromFuntionToTruthTable()
-# test_FromTruthTableToFuntion()
