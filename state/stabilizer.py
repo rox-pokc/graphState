@@ -6,7 +6,7 @@ from state.stabilizer_list import *
 
 
 def find_all_stabilizers(state):
-    all_stabilizers = get_all_stabilizers(4)  # for now amount of qubits hardcoded
+    all_stabilizers = get_all_stabilizers(7)  # for now amount of qubits hardcoded
     eigen_values = {}
     plus_stabilizers = set()
     minus_stabilizers = set()

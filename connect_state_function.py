@@ -25,26 +25,27 @@ def compare_stabilizer_with_row(stabilizer, row_truth_table, direct):
 
 def compare_ev_with_output(ev, output, direct):
     if direct:
-        if ((ev == 1 and output == 1) or (ev == -1 and output == 0)):
+        if (ev == 1 and output == 1) or (ev == -1 and output == 0):
             return True
         return False
     else:
-        if ((ev == 1 and output == 0) or (ev == -1 and output == 1)):
+        if (ev == 1 and output == 0) or (ev == -1 and output == 1):
             return True
         return False
 
 
 def brute_force_make_connection(stabilizers_eigen_values, truth_table):
-    array = list(range(len(truth_table[0])))
-    combinations = list(itertools.combinations(array, 4))
-    for stab_comp in range(2):
-        for ev_comp in range(2):
+    array = list(range(len(truth_table[0]) - 1))
+    combinations = list(itertools.combinations(array, 7))
+    # combinations = list(itertools.permutations(array))
+    for stab_comp in [True, False]:
+        for ev_comp in [True, False]:
             for combination in combinations:
                 used = []
                 for i in range(len(truth_table)):
                     used.append(False)
-                updated = False
                 for stabilizer in stabilizers_eigen_values:
+                    updated = False
                     for i in range(len(truth_table)):
                         if (not used[i] and
                                 compare_stabilizer_with_row(stabilizer,
@@ -55,23 +56,25 @@ def brute_force_make_connection(stabilizers_eigen_values, truth_table):
                                                        ev_comp)):
                             used[i] = True
                             updated = True
-                            continue
-                    # print(stabilizer)
-                    # print(used)
-                    if not updated:
-                        # print("Start over!!")
-                        break
+                            break
+                    if updated:
+                        print(stabilizer)
+                        print(ev_comp)
+                        print(used)
                 if all(used):
                     print("This is a solution!")
                     return True
     return False
 
 
-qc = QuantumCircuit(4)
+qc = QuantumCircuit(7)
 qc.h(0)
 qc.cx(0, 1)
-qc.cx(1, 2)
-qc.cx(2, 3)
+qc.cx(0, 2)
+qc.cx(0, 3)
+qc.cx(0, 4)
+qc.cx(0, 5)
+qc.cx(0, 6)
 
 state = StabilizerState(qc)
 
@@ -85,4 +88,5 @@ print('x1\tx2\tx3\tx1^x2\tx1^x3\tx2^x3\tx1^x2^x3\tf')
 print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in truth_table]))
 
 solution_exist = brute_force_make_connection(stabilizers_eigen_values, truth_table)
-print(solution_exist)
+
+print("solution_exist: ", solution_exist)
