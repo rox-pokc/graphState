@@ -5,8 +5,8 @@ from numpy import round
 from state.stabilizer_list import *
 
 
-def find_all_stabilizers(state):
-    all_stabilizers = get_all_stabilizers(7)  # for now amount of qubits hardcoded
+def find_all_stabilizers(state, qubits_number):
+    all_stabilizers = get_all_stabilizers(qubits_number)
     eigen_values = {}
     plus_stabilizers = set()
     minus_stabilizers = set()
@@ -18,8 +18,8 @@ def find_all_stabilizers(state):
         else:
             if ev == -1:
                 minus_stabilizers.add(stabilizer)
-    print("+1: ", plus_stabilizers)
-    print("-1: ", minus_stabilizers)
+    # print("+1: ", plus_stabilizers)     # TODO: mb get rid of printing
+    # print("-1: ", minus_stabilizers)
 
     # checked ev using estimator and finding expectation value of operator
     # estimator = Estimator()
