@@ -5,8 +5,8 @@ from numpy import round
 from state.stabilizer_list import *
 
 
-def find_all_stabilizers(state, qubits_number):
-    all_stabilizers = get_all_stabilizers(qubits_number)
+def find_all_stabilizers(state):
+    all_stabilizers = get_all_stabilizers(state.num_qubits)
     eigen_values = {}
     plus_stabilizers = set()
     minus_stabilizers = set()

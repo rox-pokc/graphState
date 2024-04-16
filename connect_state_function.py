@@ -71,7 +71,7 @@ qc.cx(0, 3)
 
 state = StabilizerState(qc)
 
-stabilizers_eigen_values = find_all_stabilizers(state, qubits_number)
+stabilizers_eigen_values = find_all_stabilizers(state)
 for stabilizer in stabilizers_eigen_values:
     print(stabilizer, "\t", stabilizers_eigen_values[stabilizer])
 
