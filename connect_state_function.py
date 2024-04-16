@@ -43,7 +43,7 @@ def brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number):
     for combination in combinations:
         for order in COMPARE_CHOICES:
             for i in range(pow(2, qubits_number)):
-                choices = [int(x) for x in ("{0:0" + str(qubits_number) + "b}").format(i)]
+                choices = tuple(int(x) for x in ("{0:0" + str(qubits_number) + "b}").format(i))
                 found = True
                 for row in range(len(truth_table)):
                     table_row_stabilizer = ''
@@ -81,4 +81,5 @@ print('x1\tx2\tx3\tx1^x2\tx1^x3\tx2^x3\tx1^x2^x3\tf')
 print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in truth_table]))
 
 combination, choices, order = brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
-print(combination, choices, order)
+print("Combination of columns: ", combination, "\nRules for each column: ",
+      choices, "\nComparison order for ev and function outcome: ", order)
