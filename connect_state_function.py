@@ -14,23 +14,33 @@ EV_COMPARE_CHOICES = {
 }
 
 INPUT_COMPARE_CHOICES = {
-    'IX': 0,
-    'IY': 1,
-    'IZ': 2,
-    'XI': 3,
-    'XY': 4,
-    'XZ': 5,
-    'YI': 6,
-    'YX': 7,
-    'YZ': 8,
-    'ZI': 9,
-    'ZX': 10,
-    'ZY': 11
+    'II': 0,
+    'IX': 1,
+    'IY': 2,
+    'IZ': 3,
+    'XI': 4,
+    'XX': 5,
+    'XY': 6,
+    'XZ': 7,
+    'YI': 8,
+    'YX': 9,
+    'YY': 10,
+    'YZ': 11,
+    'ZI': 12,
+    'ZX': 13,
+    'ZY': 14,
+    'ZZ': 15
 }
 
 
+def get_name_compare_choice(number):
+    return [name for name, value in INPUT_COMPARE_CHOICES.items() if value == number][0]
+
+
 def transform_input(input, choice):
-    if choice == INPUT_COMPARE_CHOICES['IX']:
+    if choice == INPUT_COMPARE_CHOICES['II']:
+        return "I"
+    elif choice == INPUT_COMPARE_CHOICES['IX']:
         if input == 0:
             return "I"
         else:
@@ -50,6 +60,8 @@ def transform_input(input, choice):
             return "X"
         else:
             return "I"
+    elif choice == INPUT_COMPARE_CHOICES['XX']:
+        return "X"
     elif choice == INPUT_COMPARE_CHOICES['XY']:
         if input == 0:
             return "X"
@@ -70,6 +82,8 @@ def transform_input(input, choice):
             return "Y"
         else:
             return "X"
+    elif choice == INPUT_COMPARE_CHOICES['YY']:
+        return "Y"
     elif choice == INPUT_COMPARE_CHOICES['YZ']:
         if input == 0:
             return "Y"
@@ -90,6 +104,8 @@ def transform_input(input, choice):
             return "Z"
         else:
             return "Y"
+    elif choice == INPUT_COMPARE_CHOICES['ZZ']:
+        return "Z"
 
 
 def compare(function_outcome, ev, order):
@@ -105,7 +121,7 @@ def compare(function_outcome, ev, order):
 
 def brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number):
     combinations = list(itertools.combinations(list(range(len(truth_table[0]) - 1)), qubits_number))
-    choices = list(itertools.product(range(12), repeat=qubits_number))
+    choices = list(itertools.product(range(16), repeat=qubits_number))
     for combination in combinations:
         for order in EV_COMPARE_CHOICES:
             for choice in choices:
@@ -126,13 +142,24 @@ def brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number):
     raise Exception("No solution found!")
 
 
-qubits_number = 4
+# qubits_number = 4
+#
+# qc = QuantumCircuit(qubits_number)
+# qc.h(0)
+# qc.cx(0, 1)
+# qc.cx(0, 2)
+# qc.cx(0, 3)
+
+qubits_number = 7
 
 qc = QuantumCircuit(qubits_number)
 qc.h(0)
 qc.cx(0, 1)
 qc.cx(0, 2)
 qc.cx(0, 3)
+qc.cx(0, 4)
+qc.cx(0, 5)
+qc.cx(0, 6)
 
 state = StabilizerState(qc)
 print(state)
@@ -148,4 +175,4 @@ print('\n'.join(['\t'.join([str(cell) for cell in row]) for row in truth_table])
 
 combination, choice, order = brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
 print("Combination of columns: ", combination, "\nRules for each column: ",
-      choice, "\nComparison order for ev and function outcome: ", order)
+      [get_name_compare_choice(item) for item in choice], "\nComparison order for ev and function outcome: ", order)
