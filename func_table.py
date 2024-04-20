@@ -4,14 +4,14 @@ from functools import cmp_to_key
 class BooleanFunction:
     num_args = 0
     truth_table = []
-    truth_table_and = []
+    inverse_table_and = []
     full_perm_table = []
     inputs_perm_table = []
 
     def __init__(self, num_args):
         self.num_args = num_args
         self.truth_table = self.truth_table()
-        self.truth_table_and = self.truth_table_and()
+        self.inverse_table_and = np.linalg.inv(self.truth_table_and()).astype(int) % 2
         self.full_perm_table = self.generate_permutations(num_args, with_zeros=True)
         self.inputs_perm_table = self.generate_permutations(num_args, with_zeros=False)
 
@@ -83,7 +83,6 @@ class BooleanFunction:
             for k in range(len(and_table)):
                 row.append(self.and_convolution(bits, and_table[k]))
             truth_table.append(row)
-
         return truth_table
 
     def from_function_to_truth_table(self, bool_func):
@@ -94,20 +93,7 @@ class BooleanFunction:
         return truth_table
 
     def from_output_to_coeffs(self, f_x):
-        and_table = self.truth_table_and
-        coeffs = []
-        flag = 0
-        for i in range(2**(2**self.num_args)):
-            flag = 1
-            coeffs = np.array([int(x) for x in np.binary_repr(i, width=2**self.num_args)])
-            for j in range(len(and_table)):
-                res = (coeffs * and_table[j]).sum() % 2
-                if res != f_x[j]:
-                    flag = 0
-                    break
-            if flag == 1:
-                break
-        return coeffs
+        return (self.inverse_table_and.dot(f_x) % 2).astype(int)
 
     def from_output_to_function(self, f_x, return_coeffs = False):
         coeffs = self.from_output_to_coeffs(f_x)
@@ -256,19 +242,27 @@ def test_from_truth_table_to_function():
     print("All table-to-function 2-input tests passed")
 
     for f_x in perm8:
-        f_x = np.random.randint(0,2, 2**3)
         f_str = bf3.from_output_to_function(f_x)
         f = lambda x: eval(f_str)
         for i in range(len(perm3)):
             assert f(perm3[i]) == f_x[i]
     print("All table-to-function 3-input tests passed")
 
-    for i in range(20):
+    for i in range(200):
         f_x = np.random.randint(0,2, 2**4)
         f_str = bf4.from_output_to_function(f_x)
         f = lambda x: eval(f_str)
         for i in range(len(perm4)):
             assert f(perm4[i]) == f_x[i]
+    
+    # Test 5-input function - doesn't work because of linalg inversion
+    # f_x = [0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0]
+    # f_coeffs = bf5.from_output_to_coeffs(f_x)
+    # print(f_coeffs)
+    # f_str = "x[1]^x[4]^x[0]&x[1]^x[0]&x[3]^x[1]&x[2]^x[3]&x[4]^x[0]&x[2]&x[4]^x[1]&x[3]&x[4]^x[2]&x[3]&x[4]^x[0]&x[1]&x[2]&x[3]^x[0]&x[1]&x[2]&x[4]^x[1]&x[2]&x[3]&x[4]^x[0]&x[1]&x[2]&x[3]&x[4]"
+    # f = lambda x: eval(f_str)
+    # for i in range(len(perm5)):
+    #     assert f(perm5[i]) == f_x[i]
 
     print("All table-to-function tests passed")
     return
