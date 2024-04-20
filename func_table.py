@@ -71,14 +71,14 @@ def TruthTableAnd(num_args):
 
     return truth_table
 
-def FromFuntionToTruthTable(bool_func, num_args):
+def FromFunctionToTruthTable(bool_func, num_args):
     # Generate truth table with a column for the function value
     truth_table = TruthTable(num_args)
     for i in range(len(truth_table)):
         truth_table[i].append(bool_func(truth_table[i][:num_args]))
     return truth_table
 
-def FromOutputToFuntion(f_x):
+def FromOutputToFunction(f_x):
     num_args = int(np.log2(len(f_x)))
     and_table = TruthTableAnd(num_args)
 
@@ -112,11 +112,30 @@ def FromOutputToFuntion(f_x):
         f_str = "0"
     return coeffs, f_str
 
-def FromTruthTableToFuntion(truth_table):
+def FromTruthTableToFunction(truth_table):
     f_x = [row[-1] for row in truth_table]
-    return FromOutputToFuntion(f_x)
+    return FromOutputToFunction(f_x)
 
-def test_FromFuntionToTruthTable():
+def FromOutputsToFunctions(f_xs):
+    res = []
+    for f_x in f_xs:
+        coeffs, f_str = FromOutputToFunction(f_x)
+        res.append(f_str)
+    return res
+
+def FromEigenToFunction(eigenvalues):
+    encode = {1: 0, -1: 1}
+    f_x = [encode[e] for e in eigenvalues]
+    return FromOutputToFunction(f_x)
+
+def FromEigensToFunctions(eigens):
+    res = []
+    for eigenvalues in eigens:
+        coeffs, f_str = FromEigenToFunction(eigenvalues)
+        res.append(f_str)
+    return res
+
+def test_FromFunctionToTruthTable():
 
     # Test 1 - smallest case
     f1 = lambda x: (x[0] and x[1])
@@ -125,7 +144,7 @@ def test_FromFuntionToTruthTable():
                                [0,1,1,0],
                                [1,0,1,0],
                                [1,1,0,1]])
-    truth_table = FromFuntionToTruthTable(f1, num_args)
+    truth_table = FromFunctionToTruthTable(f1, num_args)
     assert np.array_equal(truth_table, result_table1)
 
     # Test 2 - GHZ case
@@ -139,7 +158,7 @@ def test_FromFuntionToTruthTable():
                      [1,0,1,1,0,1,0,0],
                      [1,1,0,0,1,1,0,1],
                      [1,1,1,0,0,0,1,0]]
-    truth_table = FromFuntionToTruthTable(f2, num_args)
+    truth_table = FromFunctionToTruthTable(f2, num_args)
     assert np.array_equal(truth_table, result_table2)
 
     # Test 3 - 4 args
@@ -154,13 +173,14 @@ def test_FromFuntionToTruthTable():
               x[0]^x[1]^x[2]^x[3], 
               f3(x)]
         result_table3.append(row)
-    truth_table = FromFuntionToTruthTable(f3, num_args)
+    truth_table = FromFunctionToTruthTable(f3, num_args)
     assert np.array_equal(truth_table, result_table3)
 
     print("All function-to-table tests passed")
     return
 
-def test_FromTruthTableToFuntion():
+
+def test_FromTruthTableToFunction():
 
     truth_table = [[0,0,0,0,0,0,0,0],
                    [0,0,1,0,1,1,1,0],
@@ -171,7 +191,7 @@ def test_FromTruthTableToFuntion():
                    [1,1,0,0,1,1,0,1],
                    [1,1,1,0,0,0,1,0]]
     num_args = 3
-    coeffs, f_str = FromTruthTableToFuntion(truth_table)
+    coeffs, f_str = FromTruthTableToFunction(truth_table)
     f = lambda x: eval(f_str)
     for i in range(len(truth_table)):
         assert f(truth_table[i][:num_args]) == truth_table[i][-1]
@@ -182,7 +202,7 @@ def test_FromTruthTableToFuntion():
     perm8 = GeneratePermutations(8, with_zeros=True, sort=False)
     
     for f_x in perm4:
-        coeffs, f_str = FromOutputToFuntion(f_x)
+        coeffs, f_str = FromOutputToFunction(f_x)
         f = lambda x: eval(f_str)
         for i in range(len(perm2)):
             assert f(perm2[i]) == f_x[i]
@@ -190,7 +210,7 @@ def test_FromTruthTableToFuntion():
 
     for f_x in perm8:
         f_x = np.random.randint(0,2, 2**3)
-        coeffs, f_str = FromOutputToFuntion(f_x)
+        coeffs, f_str = FromOutputToFunction(f_x)
         f = lambda x: eval(f_str)
         perm = GeneratePermutations(3, with_zeros=True)
         for i in range(len(perm3)):
@@ -199,7 +219,7 @@ def test_FromTruthTableToFuntion():
 
     for i in range(20):
         f_x = np.random.randint(0,2, 2**4)
-        coeffs, f_str = FromOutputToFuntion(f_x)
+        coeffs, f_str = FromOutputToFunction(f_x)
         f = lambda x: eval(f_str)
         perm = GeneratePermutations(4, with_zeros=True)
         for i in range(len(perm4)):
@@ -208,5 +228,5 @@ def test_FromTruthTableToFuntion():
     print("All table-to-function tests passed")
     return
 
-test_FromFuntionToTruthTable()
-test_FromTruthTableToFuntion()
+test_FromFunctionToTruthTable()
+test_FromTruthTableToFunction()
