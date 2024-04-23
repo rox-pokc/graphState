@@ -24,6 +24,7 @@ def main():
     qc.cx(0, 5)
     qc.cx(0, 6)
 
+
     # qubits_number = 7
     #
     # qc = QuantumCircuit(qubits_number)
@@ -47,17 +48,15 @@ def main():
     print("x1\tx2\tx3\tx1^x2\tx1^x3\tx2^x3\tx1^x2^x3\tf")
     print("\n".join(["\t".join([str(cell) for cell in row]) for row in truth_table]))
 
-    print(multiprocessing.cpu_count())
-    print(os.cpu_count())
-
     start = time.time()
     results = brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
     end = time.time()
+    result_number = 1
     for result in results:
-        if result["is_solution"]:
-            print("Combination of columns: ", result["combination"], "\nRules for each column: ",
-                  [get_name_compare_choice(item) for item in result["choice"]],
-                  "\nComparison order for ev and function outcome: ", result["order"])
+        print(result_number, ". Combination of columns: ", result["combination"], "\nRules for each column: ",
+              [get_name_compare_choice(item) for item in result["choice"]],
+              "\nComparison order for ev and function outcome: ", result["order"], "\n")
+        result_number += 1
     print("Elapsed: ", end - start)
 
 
