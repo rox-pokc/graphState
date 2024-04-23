@@ -10,13 +10,15 @@ def test_function(x): return (x[0] and x[1]) ^ (x[1] and x[2])
 
 
 def main():
-    qubits_number = 4
+    qubits_number = 6
 
     qc = QuantumCircuit(qubits_number)
     qc.h(0)
     qc.cx(0, 1)
     qc.cx(0, 2)
     qc.cx(0, 3)
+    qc.cx(0, 4)
+    qc.cx(0, 5)
 
     state = StabilizerState(qc)
 
