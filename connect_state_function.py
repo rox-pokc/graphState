@@ -118,7 +118,7 @@ def compare(function_outcome, ev, order):
 
 
 def combination_processing(combination, truth_table, stabilizers_eigen_values, qubits_number):
-    choices = list(itertools.product(range(16), repeat=qubits_number))
+    choices = list(itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number))
     results = []
     for order in EV_COMPARE_CHOICES:
         for choice in choices:

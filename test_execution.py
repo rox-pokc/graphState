@@ -1,32 +1,26 @@
-import time
-
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import StabilizerState
 from state.stabilizer import *
 from function.function_table import *
 from connect_state_function import *
-import multiprocessing
-import os
+import time
 
 
 def test_function(x): return (x[0] and x[1]) ^ (x[1] and x[2])
 
 
 def main():
-    qubits_number = 7
+    qubits_number = 4
 
     qc = QuantumCircuit(qubits_number)
     qc.h(0)
     qc.cx(0, 1)
     qc.cx(0, 2)
     qc.cx(0, 3)
-    qc.cx(0, 4)
-    qc.cx(0, 5)
-    qc.cx(0, 6)
 
     state = StabilizerState(qc)
 
-    stabilizers_eigen_values = find_all_stabilizers(state, False)
+    stabilizers_eigen_values = find_all_stabilizers(state)
     for stabilizer in stabilizers_eigen_values:
         print(stabilizer, "\t", stabilizers_eigen_values[stabilizer])
 

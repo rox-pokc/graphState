@@ -1,15 +1,14 @@
 from qiskit.quantum_info import Pauli
-from qiskit.primitives import StatevectorEstimator as Estimator
-from qiskit.quantum_info import SparsePauliOp
-from numpy import round
-from state.stabilizer_list import *
+import itertools
 
 
-def find_all_stabilizers(state, is_GHZ):
-    if is_GHZ:
-        all_stabilizers = get_GHZ_all_stabilizers(state.num_qubits)
-    else:
-        all_stabilizers = get_all_stabilizers(state.num_qubits)
+def get_all_stabilizers(qubits_number):
+    permutations = set("".join(i) for i in list(itertools.product(["I", "X", "Z", "Y"], repeat=qubits_number)))
+    return permutations
+
+
+def find_all_stabilizers(state):
+    all_stabilizers = get_all_stabilizers(state.num_qubits)
     eigen_values = {}
     plus_stabilizers = set()
     minus_stabilizers = set()
@@ -26,13 +25,6 @@ def find_all_stabilizers(state, is_GHZ):
     print("+1 amount: ", len(plus_stabilizers))
     print("-1: ", minus_stabilizers)
     print("-1 amount: ", len(minus_stabilizers))
-
-    # checked ev using estimator and finding expectation value of operator
-    # estimator = Estimator()
-    # for stabilizer in allStabilizers:
-    #     job = estimator.run([(qc, SparsePauliOp(stabilizer), [])])
-    #     job_result = job.result()
-    #     print(stabilizer, " ", round(job_result[0].data.evs))
 
     return eigen_values
 
