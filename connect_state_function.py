@@ -119,6 +119,7 @@ def compare(function_outcome, ev, order):
 
 def combination_processing(combination, truth_table, stabilizers_eigen_values, qubits_number):
     choices = list(itertools.product(range(16), repeat=qubits_number))
+    results = []
     for order in EV_COMPARE_CHOICES:
         for choice in choices:
             found = True
@@ -134,13 +135,13 @@ def combination_processing(combination, truth_table, stabilizers_eigen_values, q
                     found = False
                     break
             if found:
-                return {"is_solution": True, "combination": combination, "choice": choice, "order": order}
-    return {"is_solution": False}
+                results.append({"combination": combination, "choice": choice, "order": order})
+    return results
 
 
 def brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number):
     combinations = list(itertools.combinations(list(range(len(truth_table[0]) - 1)), qubits_number))
-    with multiprocessing.Pool(1) as pool:
+    with multiprocessing.Pool() as pool:
         return pool.map(functools.partial(combination_processing,
                                           truth_table=truth_table,
                                           stabilizers_eigen_values=stabilizers_eigen_values,
