@@ -25,8 +25,9 @@ def main():
         print(stabilizer, "\t", stabilizers_eigen_values[stabilizer])
 
     # TODO: check if f.__code__.co_stacksize is really a number of inputs
-    truth_table = get_truth_table(test_function, test_function.__code__.co_stacksize)
-    print("x1\tx2\tx3\tx1^x2\tx1^x3\tx2^x3\tx1^x2^x3\tf")
+    function = BooleanFunction(num_args=test_function.__code__.co_stacksize)
+    truth_table = function.from_function_to_truth_table(test_function)
+    print("x1\tx2\tx3\tx1^x2\tx1^x3\tx2^x3\tx1^x2^x3\tf")  # TODO: see if there is any other way to do it nicely
     print("\n".join(["\t".join([str(cell) for cell in row]) for row in truth_table]))
 
     start = time.time()  # TODO: get rid of time measurement
