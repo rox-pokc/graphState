@@ -1,2 +1,12 @@
 .venv/
 .idea/
+__pycache__/
+
+state/__init__.py
+state/__pycache__/
+
+function/__init__.py
+function/__pycache__/
+
+examples/__init__.py
+examples/__pycache__/
