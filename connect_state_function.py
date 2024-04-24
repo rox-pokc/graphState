@@ -119,7 +119,7 @@ def compare(function_outcome, ev, order):
 
 
 def combination_processing(combination, truth_table, stabilizers_eigen_values, qubits_number):
-    start = time.time()
+    start = time.time()  # TODO: get rid of time measurement
     choices = list(itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number))
     results = []
     for order in EV_COMPARE_CHOICES:
@@ -139,19 +139,19 @@ def combination_processing(combination, truth_table, stabilizers_eigen_values, q
             if found:
                 results.append({"combination": combination, "choice": choice, "order": order})
     end = time.time()
-    print("Combination elapsed ", end - start)
+    print("Combination elapsed: ", end - start)
     return results
 
 
 def brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number):
     combinations = list(itertools.combinations(list(range(len(truth_table[0]) - 1)), qubits_number))
     with multiprocessing.Pool() as pool:
-        s = time.time()
+        start = time.time()  # TODO: get rid of time measurement
         returns = pool.map(functools.partial(combination_processing,
-                                          truth_table=truth_table,
-                                          stabilizers_eigen_values=stabilizers_eigen_values,
-                                          qubits_number=qubits_number),
-                        combinations)
-        e = time.time()
-    print("return ", e - s)
+                                             truth_table=truth_table,
+                                             stabilizers_eigen_values=stabilizers_eigen_values,
+                                             qubits_number=qubits_number),
+                           combinations)
+        end = time.time()
+    print("Return multiprocessing elapsed: ", end - start)
     return returns
