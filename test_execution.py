@@ -10,13 +10,16 @@ def test_function(x): return (x[0] and x[1]) ^ (x[1] and x[2])
 
 
 def main():
-    qubits_number = 4
+    qubits_number = 7
 
     qc = QuantumCircuit(qubits_number)
     qc.h(0)
     qc.cx(0, 1)
     qc.cx(0, 2)
     qc.cx(0, 3)
+    qc.cx(0, 4)
+    qc.cx(0, 5)
+    qc.cx(0, 6)
 
     state = StabilizerState(qc)
 
@@ -31,24 +34,8 @@ def main():
     print("\n".join(["\t".join([str(cell) for cell in row]) for row in truth_table]))
 
     start = time.time()  # TODO: get rid of time measurement
-    results = brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
+    brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
     end = time.time()
-
-    no_solutions = 0
-    for combination_result in results:
-        if len(combination_result) == 0:
-            no_solutions += 1
-    if no_solutions == len(results):
-        print("\nNo solutions")
-    else:
-        print("\nResults: ")
-        results_number = 1
-        for combination_results in results:
-            for result in combination_results:
-                print(results_number, ". Combination of columns: ", result["combination"], "\nRules for each column: ",
-                      [get_name_compare_choice(item) for item in result["choice"]],
-                      "\nComparison order for ev and function outcome: ", result["order"], "\n")
-                results_number += 1
 
     print("Elapsed: ", end - start)
 
