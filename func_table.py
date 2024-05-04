@@ -273,5 +273,49 @@ def test_from_truth_table_to_function():
     print("All table-to-function tests passed")
     return
 
+
+def test_print_all_functions():
+    bf2 = BooleanFunction(2)
+    bf3 = BooleanFunction(3)
+    bf4 = BooleanFunction(4)
+
+    truth_table = [[0,0,0,0,0,0,0,0],
+                   [0,0,1,0,1,1,1,0],
+                   [0,1,0,1,0,1,1,0],
+                   [0,1,1,1,1,0,0,1],
+                   [1,0,0,1,1,0,1,0],
+                   [1,0,1,1,0,1,0,0],
+                   [1,1,0,0,1,1,0,1],
+                   [1,1,1,0,0,0,1,0]]
+    num_args = 3
+    bf3 = BooleanFunction(num_args)
+    f_str = bf3.from_truth_table_to_function(truth_table)
+    f = lambda x: eval(f_str)
+    for i in range(len(truth_table)):
+        assert f(truth_table[i][:num_args]) == truth_table[i][-1]
+
+    perm4 = BooleanFunction.generate_permutations(4, with_zeros=True, sort=False)
+    perm8 = BooleanFunction.generate_permutations(8, with_zeros=True, sort=False)
+    
+    print("All 2-input functions:")
+    for f_x in perm4:
+        f_str = bf2.from_output_to_function(f_x)
+        print(f_str)
+
+    print("All 3-input functions:")
+    for f_x in perm8:
+        f_x = np.random.randint(0,2, 2**3)
+        f_str = bf3.from_output_to_function(f_x)
+        print(f_str)
+
+    # for i in range(20):
+    #     f_x = np.random.randint(0,2, 2**4)
+    #     f_str = bf4.from_output_to_function(f_x)
+    #     f = lambda x: eval(f_str)
+    #     for i in range(len(perm4)):
+    #         assert f(perm4[i]) == f_x[i]
+    return
+
 test_from_function_to_truth_table()
 test_from_truth_table_to_function()
+# test_print_all_functions()
