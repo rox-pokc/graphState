@@ -13,17 +13,15 @@ def test_function(x): return (x[0] and x[1]) ^ (x[1] and x[2])
 
 def main():
     state_name = "GHZ"
-    qubits_number = 4
-    inputs_number = 4
+    qubits_number = 3
+    inputs_number = 3
 
     qc = QuantumCircuit(qubits_number)
     qc.h(0)
     qc.h(1)
     qc.h(2)
-    qc.h(3)
     qc.cz(0, 1)
     qc.cz(0, 2)
-    qc.cz(0, 3)
 
     state = StabilizerState(qc)
 
@@ -56,15 +54,17 @@ def main():
     results_number = 0
     for function in functions:
         print(function)
-        sys.stdout.write(function + '\n')
         results_number += 1
-    print("Total: ", results_number)
+    print("\nTotal: ", results_number)
     print("Elapsed: ", end - start)
 
     # Close the file
     sys.stdout.close()
     # Restore sys.stdout to our old saved file handler
     sys.stdout = stdout_fileno
+
+    print("Total: ", results_number)
+    print("Elapsed: ", end - start)
 
 
 if __name__ == '__main__':
