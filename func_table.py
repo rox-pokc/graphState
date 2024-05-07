@@ -7,6 +7,7 @@ class BooleanFunction:
     truth_table_and = []
     full_perm_table = []
     inputs_perm_table = []
+    func_perm = []
 
     def __init__(self, num_args):
         self.num_args = num_args
@@ -14,6 +15,14 @@ class BooleanFunction:
         self.truth_table_and = self.truth_table_and()
         self.full_perm_table = self.generate_permutations(num_args, with_zeros=True)
         self.inputs_perm_table = self.generate_permutations(num_args, with_zeros=False)
+        if num_args == 2:
+            self.func_perm = [[0,2,1,3]]
+        elif num_args == 3:
+            self.func_perm = [[0,2,1,3,4,6,5,7],
+                            [0,1,4,5,2,3,6,7],
+                            [0,4,1,5,2,6,3,7],
+                            [0,2,4,6,1,3,5,7],
+                            [0,4,2,6,1,5,3,7]]
 
     @staticmethod
     def compare_bit_vecs(bit_vec1, bit_vec2):
@@ -93,7 +102,7 @@ class BooleanFunction:
             truth_table[i].append(bool_func(truth_table[i][:self.num_args]))
         return truth_table
 
-    def from_output_to_coeffs(self, f_x):
+    def from_output_to_coeffs_brute_force(self, f_x):
         and_table = self.truth_table_and
         coeffs = []
         flag = 0
@@ -108,6 +117,9 @@ class BooleanFunction:
             if flag == 1:
                 break
         return coeffs
+
+    def from_output_to_coeffs(self, f_x):
+        return np.around(np.linalg.solve(np.matrix(self.truth_table_and), f_x)).astype(int) % 2
 
     def from_output_to_function(self, f_x, return_coeffs = False):
         coeffs = self.from_output_to_coeffs(f_x)
@@ -168,6 +180,34 @@ class BooleanFunction:
                 if len(cur_str) > 0:
                     inputs.append(cur_str[1:])
         return inputs
+    
+    def all_unique_functions(self):
+        map_outputs = {}
+        for i in range(2**self.num_args + 1):
+            map_outputs[i] = []
+
+        perm_table = self.generate_permutations(2**self.num_args, with_zeros=True, sort=False)
+        res = []
+        for perm in perm_table:
+            idx = np.count_nonzero(perm)
+            if map_outputs[idx] == []:
+                map_outputs[idx].append(perm)
+            else:
+                flag = 0
+                for indexes in self.func_perm:
+                    if [perm[i] for i in indexes] in map_outputs[idx]:
+                        flag = 1
+                        break
+                if flag == 0:
+                    map_outputs[idx].append(perm)
+        res = []
+        for output in map_outputs.values():
+            for out in output:
+                func = self.from_output_to_function(out)
+                if func[0] != '1':
+                    res.append(func)
+        print(len(res), res)
+        return res
 
 def test_from_function_to_truth_table():
 
@@ -219,6 +259,7 @@ def test_from_truth_table_to_function():
     bf2 = BooleanFunction(2)
     bf3 = BooleanFunction(3)
     bf4 = BooleanFunction(4)
+    bf5 = BooleanFunction(5)
 
     # print(bf2.inputs_from_indexes(np.ones(3)))
     # print(bf3.inputs_from_indexes(np.ones(7)))
@@ -246,6 +287,7 @@ def test_from_truth_table_to_function():
     perm2 = BooleanFunction.generate_permutations(2, with_zeros=True, sort=False)
     perm3 = BooleanFunction.generate_permutations(3, with_zeros=True, sort=False)
     perm4 = BooleanFunction.generate_permutations(4, with_zeros=True, sort=False)
+    perm5 = BooleanFunction.generate_permutations(5, with_zeros=True, sort=False)
     perm8 = BooleanFunction.generate_permutations(8, with_zeros=True, sort=False)
     
     for f_x in perm4:
@@ -270,9 +312,26 @@ def test_from_truth_table_to_function():
         for i in range(len(perm4)):
             assert f(perm4[i]) == f_x[i]
 
+    # Test 5-input function - doesn't work because of linalg inversion
+    # f_x = [0, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0]
+    # f_coeffs = bf5.from_output_to_coeffs(f_x)
+    # print(f_coeffs)
+    # f_str = "x[1]^x[4]^x[0]&x[1]^x[0]&x[3]^x[1]&x[2]^x[3]&x[4]^x[0]&x[2]&x[4]^x[1]&x[3]&x[4]^x[2]&x[3]&x[4]^x[0]&x[1]&x[2]&x[3]^x[0]&x[1]&x[2]&x[4]^x[1]&x[2]&x[3]&x[4]^x[0]&x[1]&x[2]&x[3]&x[4]"
+    # f = lambda x: eval(f_str)
+    # for i in range(len(perm5)):
+    #     assert f(perm5[i]) == f_x[i]
+
     print("All table-to-function tests passed")
     return
 
+
+def test_print_unique_functions():
+    bf2 = BooleanFunction(2)
+    bf3 = BooleanFunction(3)
+    # bf4 = BooleanFunction(4)
+
+    bf2.all_unique_functions()
+    bf3.all_unique_functions()
 
 def test_print_all_functions():
     bf2 = BooleanFunction(2)
@@ -319,3 +378,4 @@ def test_print_all_functions():
 test_from_function_to_truth_table()
 test_from_truth_table_to_function()
 # test_print_all_functions()
+test_print_unique_functions()
