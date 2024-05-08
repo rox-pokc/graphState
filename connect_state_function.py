@@ -1,8 +1,8 @@
 import itertools
 import multiprocessing
 import functools
-import time
 from function.function_table import *
+
 
 def test_function(x): return (x[0] and x[1]) ^ x[2]
 
@@ -119,10 +119,13 @@ def compare(function_outcome, ev, order):
 
 
 def combination_processing(combination, function, stabilizers_eigen_values, qubits_number):
-    start = time.time()  # TODO: get rid of time measurement
+    if event.is_set():
+        return
     truth_table = function.truth_table
-    results = set()
     for choice in itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number):
+        if all(outcome for outcome in outcomes.values()):
+            event.set()
+            return
         found = True
         suitable_stabilizers = []
         for row in range(len(truth_table)):
@@ -139,32 +142,72 @@ def combination_processing(combination, function, stabilizers_eigen_values, qubi
             outputs = []
             for stabilizer in suitable_stabilizers:
                 if stabilizers_eigen_values[stabilizer] == 1:
-                    outputs.append(0)
-                else:
-                    outputs.append(1)
-            results.add(function.from_output_to_function(outputs))
-            outputs.clear()
-            for stabilizer in suitable_stabilizers:
-                if stabilizers_eigen_values[stabilizer] == 1:
                     outputs.append(1)
                 else:
                     outputs.append(0)
-            results.add(function.from_output_to_function(outputs))
-    end = time.time()
-    return results
+            obtained_outcome = tuple(outputs)
+            if obtained_outcome in outcomes:
+                outcomes[obtained_outcome] = True
 
 
-def brute_force_connect(function, stabilizers_eigen_values, qubits_number):
-    with multiprocessing.Pool() as pool:
-        start = time.time()  # TODO: get rid of time measurement
-        results = pool.map(functools.partial(combination_processing,
-                                             function=function,
-                                             stabilizers_eigen_values=stabilizers_eigen_values,
-                                             qubits_number=qubits_number),
-                           itertools.permutations(list(range(len(function.truth_table[0]))), qubits_number))
-        end = time.time()
-    functions = set()
-    for result in results:
-        for function in result:
-            functions.add(function)
-    return functions
+def get_set_of_functions_outcomes(filename):
+    file = open(filename)
+    functions_outcomes = dict()
+    while True:
+        content = file.readline()
+        if not content:
+            break
+        truth_table = BooleanFunction(3).from_function_to_truth_table(lambda x: eval(content))
+        function_outcomes = []
+        for row in truth_table:
+            function_outcomes.append(row[len(row) - 1])
+        functions_outcomes[tuple(function_outcomes)] = False
+    file.close()
+    return functions_outcomes
+
+
+def init_worker(GHZ_outcomes, shared_event):
+    global outcomes
+    outcomes = GHZ_outcomes
+
+    global event
+    event = shared_event
+
+
+def parallel_search_each_class(GHZ_outcomes, function, stabilizers_eigen_values, qubits_number):
+    with multiprocessing.Manager() as manager:
+        shared_event = manager.Event()
+        pool = multiprocessing.Pool(initializer=init_worker, initargs=(GHZ_outcomes, shared_event,))
+        with pool:
+            results = pool.map_async(functools.partial(combination_processing,
+                                                       function=function,
+                                                       stabilizers_eigen_values=stabilizers_eigen_values,
+                                                       qubits_number=qubits_number),
+                                     itertools.permutations(list(range(len(function.truth_table[0]))), qubits_number),
+                                     )
+            results.wait()
+            pool.close()
+            pool.join()
+        return shared_event.is_set()
+
+
+def search_functions(function, stabilizers_eigen_values, qubits_number):
+    GHZ_7_coverage = parallel_search_each_class(
+        get_set_of_functions_outcomes("function/dictionary/7-GHZ_functions.txt"),
+        function, stabilizers_eigen_values, qubits_number)
+    if GHZ_7_coverage:
+        print("GHZ-7 functions class coverage")
+    else:
+        GHZ_4_coverage = parallel_search_each_class(
+            get_set_of_functions_outcomes("function/dictionary/4-GHZ_functions.txt"),
+            function, stabilizers_eigen_values, qubits_number)
+        if GHZ_4_coverage:
+            print("GHZ-4 functions class coverage")
+        else:
+            GHZ_3_coverage = parallel_search_each_class(
+                get_set_of_functions_outcomes("function/dictionary/3-GHZ_functions.txt"),
+                function, stabilizers_eigen_values, qubits_number)
+            if GHZ_3_coverage:
+                print("GHZ-3 functions class coverage")
+            else:
+                print("GHZ-2 functions class coverage")
