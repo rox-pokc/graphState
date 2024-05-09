@@ -1,3 +1,5 @@
+import statistics
+
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import StabilizerState
 from state.stabilizer import *

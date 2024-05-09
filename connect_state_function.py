@@ -123,9 +123,6 @@ def combination_processing(combination, function, stabilizers_eigen_values, qubi
         return
     truth_table = function.truth_table
     for choice in itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number):
-        if all(outcome for outcome in outcomes.values()):
-            event.set()
-            return
         found = True
         suitable_stabilizers = []
         for row in range(len(truth_table)):
@@ -148,22 +145,24 @@ def combination_processing(combination, function, stabilizers_eigen_values, qubi
             obtained_outcome = tuple(outputs)
             if obtained_outcome in outcomes:
                 outcomes[obtained_outcome] = True
+                event.set()
+                return
 
 
 def get_set_of_functions_outcomes(filename):
     file = open(filename)
-    functions_outcomes = dict()
+    outcomes = dict()
     while True:
-        content = file.readline()
-        if not content:
+        function = file.readline()
+        if not function:
             break
-        truth_table = BooleanFunction(3).from_function_to_truth_table(lambda x: eval(content))
+        truth_table = BooleanFunction(3).from_function_to_truth_table(lambda x: eval(function)) #TODO: careful 3 in plein number, change it
         function_outcomes = []
         for row in truth_table:
             function_outcomes.append(row[len(row) - 1])
-        functions_outcomes[tuple(function_outcomes)] = False
+        outcomes[tuple(function_outcomes)] = False
     file.close()
-    return functions_outcomes
+    return outcomes
 
 
 def init_worker(GHZ_outcomes, shared_event):
@@ -192,22 +191,19 @@ def parallel_search_each_class(GHZ_outcomes, function, stabilizers_eigen_values,
 
 
 def search_functions(function, stabilizers_eigen_values, qubits_number):
-    GHZ_7_coverage = parallel_search_each_class(
-        get_set_of_functions_outcomes("function/dictionary/7-GHZ_functions.txt"),
+    print("GHZ-2 functions class coverage")
+    GHZ_3_coverage = parallel_search_each_class(
+        get_set_of_functions_outcomes("function/dictionary/3-GHZ_functions.txt"),
         function, stabilizers_eigen_values, qubits_number)
-    if GHZ_7_coverage:
-        print("GHZ-7 functions class coverage")
-    else:
+    if GHZ_3_coverage:
+        print("GHZ-3 functions class coverage")
         GHZ_4_coverage = parallel_search_each_class(
             get_set_of_functions_outcomes("function/dictionary/4-GHZ_functions.txt"),
             function, stabilizers_eigen_values, qubits_number)
         if GHZ_4_coverage:
             print("GHZ-4 functions class coverage")
-        else:
-            GHZ_3_coverage = parallel_search_each_class(
-                get_set_of_functions_outcomes("function/dictionary/3-GHZ_functions.txt"),
+            GHZ_7_coverage = parallel_search_each_class(
+                get_set_of_functions_outcomes("function/dictionary/7-GHZ_functions.txt"),
                 function, stabilizers_eigen_values, qubits_number)
-            if GHZ_3_coverage:
-                print("GHZ-3 functions class coverage")
-            else:
-                print("GHZ-2 functions class coverage")
+            if GHZ_7_coverage:
+                print("GHZ-7 functions class coverage")
