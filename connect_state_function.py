@@ -1,11 +1,6 @@
 import itertools
 import multiprocessing
 import functools
-import time
-from function.function_table import *
-
-def test_function(x): return (x[0] and x[1]) ^ x[2]
-
 
 EV_COMPARE_CHOICES = {
     "direct": 0,
@@ -119,7 +114,6 @@ def compare(function_outcome, ev, order):
 
 
 def combination_processing(combination, function, stabilizers_eigen_values, qubits_number):
-    start = time.time()  # TODO: get rid of time measurement
     truth_table = function.truth_table
     results = set()
     for choice in itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number):
@@ -150,19 +144,16 @@ def combination_processing(combination, function, stabilizers_eigen_values, qubi
                 else:
                     outputs.append(0)
             results.add(function.from_output_to_function(outputs))
-    end = time.time()
     return results
 
 
 def brute_force_connect(function, stabilizers_eigen_values, qubits_number):
     with multiprocessing.Pool() as pool:
-        start = time.time()  # TODO: get rid of time measurement
         results = pool.map(functools.partial(combination_processing,
                                              function=function,
                                              stabilizers_eigen_values=stabilizers_eigen_values,
                                              qubits_number=qubits_number),
                            itertools.permutations(list(range(len(function.truth_table[0]))), qubits_number))
-        end = time.time()
     functions = set()
     for result in results:
         for function in result:
