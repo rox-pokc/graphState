@@ -1,11 +1,6 @@
 import itertools
 import multiprocessing
 import functools
-import time
-
-
-def test_function(x): return (x[0] and x[1]) ^ x[2]
-
 
 EV_COMPARE_CHOICES = {
     "direct": 0,
@@ -118,40 +113,49 @@ def compare(function_outcome, ev, order):
         return False
 
 
-def combination_processing(combination, truth_table, stabilizers_eigen_values, qubits_number):
-    start = time.time()  # TODO: get rid of time measurement
-    choices = list(itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number))
-    results = []
-    for order in EV_COMPARE_CHOICES:
-        for choice in choices:
-            found = True
-            for row in range(len(truth_table)):
-                table_row_stabilizer = ""
-                for column in combination:
-                    table_row_stabilizer += transform_input(truth_table[row][column],
-                                                            choice[combination.index(column)])
-                if not ((table_row_stabilizer in stabilizers_eigen_values) and
-                        (compare(truth_table[row][len(truth_table[row]) - 1],
-                                 stabilizers_eigen_values[table_row_stabilizer],
-                                 order))):
-                    found = False
-                    break
-            if found:
-                results.append({"combination": combination, "choice": choice, "order": order})
-    end = time.time()
-    print("Combination elapsed: ", end - start)
+def combination_processing(combination, function, stabilizers_eigen_values, qubits_number):
+    truth_table = function.truth_table
+    results = set()
+    for choice in itertools.product(range(len(INPUT_COMPARE_CHOICES)), repeat=qubits_number):
+        found = True
+        suitable_stabilizers = []
+        for row in range(len(truth_table)):
+            table_row_stabilizer = ""
+            for column in combination:
+                table_row_stabilizer += transform_input(truth_table[row][column],
+                                                        choice[combination.index(column)])
+            suitable_stabilizers.append(table_row_stabilizer)
+            if not (table_row_stabilizer in stabilizers_eigen_values):
+                found = False
+                suitable_stabilizers.clear()
+                break
+        if found:
+            outputs = []
+            for stabilizer in suitable_stabilizers:
+                if stabilizers_eigen_values[stabilizer] == 1:
+                    outputs.append(0)
+                else:
+                    outputs.append(1)
+            results.add(function.from_output_to_function(outputs))
+            outputs.clear()
+            for stabilizer in suitable_stabilizers:
+                if stabilizers_eigen_values[stabilizer] == 1:
+                    outputs.append(1)
+                else:
+                    outputs.append(0)
+            results.add(function.from_output_to_function(outputs))
     return results
 
 
-def brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number):
-    combinations = list(itertools.combinations(list(range(len(truth_table[0]) - 1)), qubits_number))
+def brute_force_connect(function, stabilizers_eigen_values, qubits_number):
     with multiprocessing.Pool() as pool:
-        start = time.time()  # TODO: get rid of time measurement
-        returns = pool.map(functools.partial(combination_processing,
-                                             truth_table=truth_table,
+        results = pool.map(functools.partial(combination_processing,
+                                             function=function,
                                              stabilizers_eigen_values=stabilizers_eigen_values,
                                              qubits_number=qubits_number),
-                           combinations)
-        end = time.time()
-    print("Return multiprocessing elapsed: ", end - start)
-    return returns
+                           itertools.permutations(list(range(len(function.truth_table[0]))), qubits_number))
+    functions = set()
+    for result in results:
+        for function in result:
+            functions.add(function)
+    return functions
