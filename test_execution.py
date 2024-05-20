@@ -6,20 +6,22 @@ from connect_state_function import *
 import time
 
 
-def test_function(x): return (x[0] and x[1]) ^ (x[1] and x[2])
+def test_function(x): return x[0] & x[1] ^ x[0] & x[2] ^ x[1] & x[2]
 
 
 def main():
-    qubits_number = 7
+    qubits_number = 5
 
     qc = QuantumCircuit(qubits_number)
     qc.h(0)
-    qc.cx(0, 1)
-    qc.cx(0, 2)
-    qc.cx(0, 3)
-    qc.cx(0, 4)
-    qc.cx(0, 5)
-    qc.cx(0, 6)
+    qc.h(1)
+    qc.h(2)
+    qc.h(3)
+    qc.h(4)
+    qc.cz(0, 1)
+    qc.cz(0, 2)
+    qc.cz(0, 3)
+    qc.cz(0, 4)
 
     state = StabilizerState(qc)
 
@@ -27,15 +29,20 @@ def main():
     for stabilizer in stabilizers_eigen_values:
         print(stabilizer, "\t", stabilizers_eigen_values[stabilizer])
 
-    # TODO: check if f.__code__.co_stacksize is really a number of inputs
-    function = BooleanFunction(num_args=test_function.__code__.co_stacksize)
+    function = BooleanFunction(num_args=3)
     truth_table = function.from_function_to_truth_table(test_function)
     print("x1\tx2\tx3\tx1^x2\tx1^x3\tx2^x3\tx1^x2^x3\tf")  # TODO: see if there is any other way to do it nicely
     print("\n".join(["\t".join([str(cell) for cell in row]) for row in truth_table]))
 
     start = time.time()  # TODO: get rid of time measurement
-    brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
+    results = brute_force_connect(truth_table, stabilizers_eigen_values, qubits_number)
     end = time.time()
+
+    results = filter(lambda x: len(x["combination"]) != 0, results)
+    results = sorted(results, key=lambda x: x["combination"])
+    for result in results:
+        print(result)
+    print("Total amount: ", len(results))
 
     print("Elapsed: ", end - start)
 
