@@ -153,7 +153,7 @@ def brute_force_connect(function, stabilizers_eigen_values, qubits_number):
                                              function=function,
                                              stabilizers_eigen_values=stabilizers_eigen_values,
                                              qubits_number=qubits_number),
-                           itertools.permutations(list(range(len(function.truth_table[0]))), qubits_number))
+                           itertools.combinations(list(range(len(function.truth_table[0]))), qubits_number))
     functions = set()
     for result in results:
         for function in result:
