@@ -137,6 +137,66 @@
         ]
     },
     {
+        "qubitsNumber": 7,
+        "stateType": "GHZ",
+        "function": "x[0]^x[1]&x[2]",
+        "expectedResult": [1, 1, 1, -1, -1, -1, -1, 1],
+        "ibmJobs": [
+            {
+                "id": "cs72yhjyhpyg008b1seg",
+                "name": "ibm_brisbane",
+                "qubitsNumber": 127,
+                "EPLG": 1.9,
+                "time(s)": 17,
+                "observables": ["YYYYYZY", "YYYYZZX", "YYYZYZX", "YYYZZZY", "ZYYZZZX", "ZYYZYZY", "ZYYYZZY", "ZYYYYZX"],
+                "result": [ 0.15912598,  0.14227734,  0.18065479, -0.15116968, -0.13712915, -0.16708228,
+                -0.15959399,  0.16146607],
+                "MSE": 0.7102895277703508,
+                "winProb": 0.5786562049999999,
+                "standardDeviation": 0.006464361542100463
+            },
+            {
+                "id": "cs72zt7965y00085hbkg",
+                "name": "ibm_kyoto",
+                "qubitsNumber": 127,
+                "EPLG": 3.6,
+                "time(s)": 17,
+                "observables": ["YYYYYZY", "YYYYZZX", "YYYZYZX", "YYYZZZY", "ZYYZZZX", "ZYYZYZY", "ZYYYZZY", "ZYYYYZX"],
+                "result": [ 0.09635206,  0.02001158,  0.00592936, -0.04669369, -0.03483497, -0.05336422,
+                -0.07115229,  0.07041112],
+                "MSE": 0.9035603344678291,
+                "winProb": 0.524921830625,
+                "standardDeviation": 0.013813609191590154
+            },
+            {
+                "id": "cs7311475q40008v5af0",
+                "name": "ibm_brisbane",
+                "qubitsNumber": 127,
+                "EPLG": 1.9,
+                "time(s)": 17,
+                "observables": ["YYYYYZY", "YYYYZZX", "YYYZYZX", "YYYZZZY", "ZYYZZZX", "ZYYZYZY", "ZYYYZZY", "ZYYYYZX"],
+                "result": [-0.03120714, -0.03998415, -0.03949654, -0.30670771, -0.2979307,   0.02047969,
+                0.04778594, -0.04583549],
+                "MSE": 0.929008727463883,
+                "winProb": 0.5237405912499999,
+                "standardDeviation": 0.07368281267132476
+            },
+            {
+                "id": "cs731yf75q40008v5am0",
+                "name": "ibm_brisbane",
+                "qubitsNumber": 127,
+                "EPLG": 1.9,
+                "time(s)": 17,
+                "observables": ["YYYYYZY", "YYYYZZX", "YYYZYZX", "YYYZZZY", "ZYYZZZX", "ZYYZYZY", "ZYYYZZY", "ZYYYYZX"],
+                "result": [-0.09543649,  0.06810041, -0.09112027, -0.0829674 , -0.06666167,  0.08392656,
+                -0.0585088,  -0.10886474],
+                "MSE": 1.0327392626244094,
+                "winProb": 0.4935556387500001,
+                "standardDeviation": 0.041218012675435345
+            }
+        ]
+    },
+    {
         "qubitsNumber": 6,
         "stateType": "GHZ",
         "function": "x[0]&x[1]^x[0]&x[2]^x[1]&x[2]",
@@ -210,6 +270,58 @@
                 "MSE": 0.7492352057817722,
                 "winProb": 0.585097009375,
                 "standardDeviation": 0.12314345339967017
+            },
+            {
+                "id": "cs72rmj75q40008v5900",
+                "name": "ibm_sherbrooke",
+                "qubitsNumber": 127,
+                "EPLG": 1.7,
+                "time(s)": 16,
+                "observables": ["YYYYYY", "YZYYYX", "YYZYYX", "YZZYYY", "ZYYYYX", "ZZYYYY", "ZYZYYY", "ZZZYYX"],
+                "result": [ 0.5056388,   0.53561915,  0.48416033, -0.5056388,   0.46939389, -0.49400463,
+                -0.5069812,  -0.51682549],
+                "MSE": 0.2480781796883688,
+                "winProb": 0.638508639375,
+                "standardDeviation": 0.049409668443995455
+            },
+            {
+                "id": "cs72sgybqt7g0082d5ng",
+                "name": "ibm_kyoto",
+                "qubitsNumber": 127,
+                "EPLG": 3.6,
+                "time(s)": 16,
+                "observables": ["YYYYYY", "YZYYYX", "YYZYYX", "YZZYYY", "ZYYYYX", "ZZYYYY", "ZYZYYY", "ZZZYYX"],
+                "result": [ 0.42029621,  0.49676371,  0.53747303, -0.54187404,  0.42469722, -0.44450175,
+                -0.53032139, -0.58148311],
+                "MSE": 0.2560524781823644,
+                "winProb": 0.7511413931250001,
+                "standardDeviation": 0.02837609763160567
+            },
+            {
+                "id": "cs72tjtkfpw00080xph0",
+                "name": "ibm_kyoto",
+                "qubitsNumber": 127,
+                "EPLG": 3.6,
+                "time(s)": 16,
+                "observables": ["YYYYYY", "YZYYYX", "YYZYYX", "YZZYYY", "ZYYYYX", "ZZYYYY", "ZYZYYY", "ZZZYYX"],
+                "result": [ 0.3585908,   0.33885703,  0.37212253, -0.35915462,  0.36930342, -0.35238876,
+                -0.36028226, -0.38509043],
+                "MSE": 0.4072449732791306,
+                "winProb": 0.680986865625,
+                "standardDeviation": 0.006470148887281515
+            },
+            {
+                "id": "cs72vky75q40008v59dg",
+                "name": "ibm_sherbrooke",
+                "qubitsNumber": 127,
+                "EPLG": 1.7,
+                "time(s)": 16,
+                "observables": ["YYYYYY", "YZYYYX", "YYZYYX", "YZZYYY", "ZYYYYX", "ZZYYYY", "ZYZYYY", "ZZZYYX"],
+                "result": [ 0.11370866,  0.13887738,  0.16134945, -0.14427068,  0.13887738, -0.13977626,
+                -0.12269749, -0.14337179],
+                "MSE": 0.7434550684227466,
+                "winProb": 0.568933068125,
+                "standardDeviation": 0.006713237196373177
             }
         ]
     },
@@ -279,6 +391,72 @@
                 "MSE": 0.5168037858549366,
                 "winProb": 0.6680790175,
                 "standardDeviation": 0.1379471203213374
+            },
+            {
+                "id": "cs72hqeyhpyg008b1qj0",
+                "name": "ibm_sherbrooke",
+                "qubitsNumber": 127,
+                "EPLG": 1.7,
+                "time(s)": 16,
+                "observables": [
+                    "ZZYZY",
+                    "YZZZY",
+                    "ZYZZY",
+                    "YYYZY",
+                    "ZZZYY",
+                    "YZYYY",
+                    "ZYYYY",
+                    "YYZYY"
+                ],
+                "result": [ 0.80069728,  0.9182702 ,  0.90625545, -0.78610795,  0.83116326, -0.74405632,
+                -0.76679852, -0.79211532],
+                "MSE": 0.03656889579558496,
+                "winProb": 0.90909151875,
+                "standardDeviation": 0.029628904728003242
+            },
+            {
+                "id": "cs72jfskfpw00080xn30",
+                "name": "ibm_sherbrooke",
+                "qubitsNumber": 127,
+                "EPLG": 1.7,
+                "time(s)": 16,
+                "observables": [
+                    "ZZYZY",
+                    "YZZZY",
+                    "ZYZZY",
+                    "YYYZY",
+                    "ZZZYY",
+                    "YZYYY",
+                    "ZYYYY",
+                    "YYZYY"
+                ],
+                "result": [ 0.91075864,  0.91741948,  0.95116773, -0.85169921,  0.95427612, -0.84992298,
+                -0.86191249, -0.88677962],
+                "MSE": 0.011957759403230482,
+                "winProb": 0.948996016875,
+                "standardDeviation": 0.019698569188274142
+            },
+            {
+                "id": "cs72mha965y00085h9sg",
+                "name": "ibm_kyoto",
+                "qubitsNumber": 127,
+                "EPLG": 3.6,
+                "time(s)": 16,
+                "observables": [
+                    "ZZYZY",
+                    "YZZZY",
+                    "ZYZZY",
+                    "YYYZY",
+                    "ZZZYY",
+                    "YZYYY",
+                    "ZYYYY",
+                    "YYZYY"
+                ],
+                "result": [ 0.37295985,  0.37250941,  0.39142767, -0.36485203,  0.18242601, -0.16756167,
+                -0.1887321,  -0.17566949],
+                "MSE": 0.5324692768085358,
+                "winProb": 0.638508639375,
+                "standardDeviation": 0.049409668443995455
             }
         ]
     },
@@ -356,6 +534,50 @@
                 "MSE": 0.008597894591589246,
                 "winProb": 0.9604064575,
                 "standardDeviation": 0.024121047819138153
+            },
+            {
+                "id": "cs72ed1kfpw00080xm9g",
+                "name": "ibm_kyoto",
+                "qubitsNumber": 127,
+                "EPLG": 3.6,
+                "time(s)": 16,
+                "observables": [
+                    "ZZYY",
+                    "ZYZY",
+                    "ZZZX",
+                    "ZYYX",
+                    "YZZY",
+                    "YYYY",
+                    "YZYX",
+                    "YYZX"
+                ],
+                "result": [ 0.94256581,  0.91938438,  0.95218829, -0.90451327,  0.92944425, -0.88220661,
+                -0.92069654, -0.90932451],
+                "MSE": 0.006820714852592577,
+                "winProb": 0.9600202287499999,
+                "standardDeviation": 0.01033424515589637
+            },
+            {
+                "id": "",
+                "name": "ibm_sherbrooke",
+                "qubitsNumber": 127,
+                "EPLG": 1.7,
+                "time(s)": 16,
+                "observables": [
+                    "ZZYY",
+                    "ZYZY",
+                    "ZZZX",
+                    "ZYYX",
+                    "YZZY",
+                    "YYYY",
+                    "YZYX",
+                    "YYZX"
+                ],
+                "result": [ 0.94117647,  0.96258631,  0.98057057, -0.91591286,  0.95787614, -0.89493122,
+                -0.91848204, -0.93175614],
+                "MSE": 0.0045530513145756995,
+                "winProb": 0.9689557343750002,
+                "standardDeviation": 0.013210467422385248
             }
         ]
     },
@@ -447,6 +669,28 @@
                 "MSE": 0.00022403934635738666,
                 "winProb": 0.9950328949999999,
                 "standardDeviation": 0.005598009500544589
+            },
+            {
+                "id": "cs717ny75q40008v5200",
+                "name": "ibm_sherbrooke",
+                "qubitsNumber": 127,
+                "EPLG": 1.7,
+                "time(s)": 11,
+                "observables": [
+                    "ZZX",
+                    "ZZX",
+                    "ZYY",
+                    "ZYY",
+                    "YZY",
+                    "YZY",
+                    "YYX",
+                    "YYX"
+                ],
+                "result": [ 1.00000656,  1.00000656,  0.98825165,  0.98825165,  0.98909129,  0.98909129,
+                -0.96726075, -0.96726075],
+                "MSE": 0.0003322204745289292,
+                "winProb": 0.9930762812499999,
+                "standardDeviation": 0.005925981532186681
             }
         ]
     }
