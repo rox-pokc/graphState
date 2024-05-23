@@ -197,6 +197,27 @@
         ]
     },
     {
+        "qubitsNumber": 7,
+        "stateType": "BrokenGHZ",
+        "function": "x[0]^x[1]&x[2]",
+        "expectedResult": [1, 1, 1, -1, -1, -1, -1, 1],
+        "ibmJobs": [
+            {
+                "id": "cs79wb1965y00085j2ag",
+                "name": "ibm_brisbane",
+                "qubitsNumber": 127,
+                "EPLG": 1.9,
+                "time(s)": 17,
+                "observables": ["YYYYYZY", "YYYYZZX", "YYYZYZX", "YYYZZZY", "ZYYZZZX", "ZYYZYZY", "ZYYYZZY", "ZYYYYZX"],
+                "result": [ 0.02060291, -0.00245273, -0.00833927,  0.02207455, -0.00343382, -0.01373527,
+                0.01716909,  0.00490546],
+                "MSE": 0.00018832688036479848,
+                "winProb": 0.49954011374999996,
+                "standardDeviation": 0.0068461829377474805
+            }
+        ]
+    },
+    {
         "qubitsNumber": 6,
         "stateType": "GHZ",
         "function": "x[0]&x[1]^x[0]&x[2]^x[1]&x[2]",
@@ -457,6 +478,45 @@
                 "MSE": 0.5324692768085358,
                 "winProb": 0.638508639375,
                 "standardDeviation": 0.049409668443995455
+            }
+        ]
+    },
+    {
+        "qubitsNumber": 5,
+        "stateType": "BrokenGHZ",
+        "function": "x[0]&x[1]^x[0]&x[2]^x[1]&x[2]",
+        "expectedResult": [
+            1,
+            1,
+            1,
+            -1,
+            1,
+            -1,
+            -1,
+            -1
+        ],
+        "ibmJobs": [
+            {
+                "id": "cs7ac0g75q40008v627g",
+                "name": "ibm_brisbane",
+                "qubitsNumber": 127,
+                "EPLG": 1.9,
+                "time(s)": 16,
+                "observables": [
+                    "ZZYZY",
+                    "YZZZY",
+                    "ZYZZY",
+                    "YYYZY",
+                    "ZZZYY",
+                    "YZYYY",
+                    "ZYYYY",
+                    "YYZYY"
+                ],
+                "result": [ 0.01707636, -0.00481641,  0.03677985, -0.03108773,  0.00350284, -0.00262713,
+                -0.03021202,  0.00612997],
+                "MSE": 0.00045043977259403304,
+                "winProb": 0.506896221875,
+                "standardDeviation": 0.008065486940355793
             }
         ]
     },
